@@ -10,9 +10,10 @@ public class CameraController : MonoBehaviour
     public float camSpeed = 10;
     public float camOffset = 5;
     float currentDistance;
-    public float distanceBack = 5;
+    public float distanceBack;
     public float zoomSpeed = 5;
     public float returnToOffsetSpeed = 5;
+    public float heightOffset = 5;
 
   
 
@@ -27,11 +28,10 @@ public class CameraController : MonoBehaviour
             angles.y += dy * camSpeed * Time.deltaTime;
             transform.eulerAngles = angles;                      
         }
-
-        distanceBack = Mathf.Clamp(distanceBack - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, 2, 10);
+              
 
         RaycastHit hit;
-        if(Physics.Raycast(target.position, -transform.forward, out hit, camOffset))
+        if(Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, camOffset))
         {
             currentDistance = hit.distance;
         }
@@ -40,6 +40,17 @@ public class CameraController : MonoBehaviour
             currentDistance = Mathf.MoveTowards(currentDistance, camOffset, Time.deltaTime * returnToOffsetSpeed);
         }
 
-        transform.position = target.position - currentDistance * transform.forward;
+        //TODO: scroll stuff drove me nuts come back to this or leave it out completely :P
+        //distanceBack = Mathf.Clamp(distanceBack - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, 2, 10);
+
+        
+
+        transform.position = GetTargetPosition() - currentDistance * transform.forward;
+       
+    }
+
+    Vector3 GetTargetPosition()
+    {
+        return target.position + heightOffset * Vector3.up;
     }
 }
