@@ -41,6 +41,12 @@ public class Ragdoll : MonoBehaviour
         {
             RagDoll = false;
         }
+
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            ragdollActive = !ragdollActive;
+        }
     }
 
+   
 }

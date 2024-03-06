@@ -6,11 +6,13 @@ using static UnityEngine.GraphicsBuffer;
 public class CharacterMover : MonoBehaviour
 {
     //I can see youuuuu!
+    [Tooltip("The speed the player can run up to")]
     public float speed = 10;
+    [Tooltip("Player can jump to a height of X")]
     public float jumpHeight = 10;
     public float mass = 200;
     public Vector3 velocity;
-    [Tooltip("Player can jump to a height of X")]
+    [Tooltip("")]
     public Vector3 hitDirection;
     [SerializeField] Vector2 moveInput = new Vector2();    
     public bool isGrounded;
@@ -43,20 +45,22 @@ public class CharacterMover : MonoBehaviour
         camForward.y = 0;
         camForward.Normalize();
         Vector3 camRight = cam.right;
-        Vector3 delta = (moveInput.x * camRight + moveInput.y * camForward) * speed * Time.fixedDeltaTime;
+        velocity = (moveInput.x * camRight + moveInput.y * camForward) * speed * Time.fixedDeltaTime;
+
+        
+
+        if (isGrounded && this.velocity.y < 0)
+            this.velocity.y = 0;
 
         if (jumpInput && isGrounded)
         {
             float v = Mathf.Sqrt(2 * Physics.gravity.magnitude * jumpHeight);
-            velocity.y = v;
+            this.velocity.y = v;
         }
 
-        if (isGrounded && velocity.y < 0)
-            velocity.y = 0;           
-                               
-        velocity += Physics.gravity * Time.fixedDeltaTime;
+        this.velocity += Physics.gravity * Time.fixedDeltaTime;
 
-        delta += velocity * Time.fixedDeltaTime;
+        velocity += this.velocity * Time.fixedDeltaTime;
 
         if (!isGrounded)
             hitDirection = Vector3.zero;
@@ -76,17 +80,17 @@ public class CharacterMover : MonoBehaviour
 
 
 
-        cc.Move(delta);
+        cc.Move(velocity);
         isGrounded = cc.isGrounded;
         transform.forward = camForward;
     }
 
-    //private void OnControllerColliderHit(ControllerColliderHit hit)
-    //{        
-    //    hitDirection = hit.point - transform.position;
-    //    if (hit.rigidbody)
-    //    {
-    //        hit.rigidbody.AddForceAtPosition(velocity * mass, hit.point);
-    //    }
-    //}
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        hitDirection = hit.point - transform.position;
+        if (hit.rigidbody)
+        {
+            hit.rigidbody.AddForceAtPosition(velocity * mass, hit.point);
+        }
+    }
 }

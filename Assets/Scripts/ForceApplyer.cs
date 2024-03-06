@@ -27,9 +27,10 @@ public class ForceApplyer : MonoBehaviour
 
                 Rigidbody body = hit.collider.GetComponent<Rigidbody>();
                 if (body)
-                    body.AddForce(ray.direction * force);
+                    body.AddForce(-ray.direction * force);
             }            
         }
+
 
         
     }
