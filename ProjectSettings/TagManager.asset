@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Platform
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - BodyColliders
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 
