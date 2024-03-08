@@ -14,6 +14,7 @@ public class CameraController : MonoBehaviour
     public float zoomSpeed = 5;
     public float returnToOffsetSpeed = 5;
     public float heightOffset = 5;
+    public float camSmoothness = 5;
 
   
 
@@ -26,14 +27,13 @@ public class CameraController : MonoBehaviour
             float dy = Input.GetAxis("Mouse X");
             angles.x = Mathf.Clamp(angles.x + dx * camSpeed * Time.deltaTime, 0, 70);
             angles.y += dy * camSpeed * Time.deltaTime;
+            Vector3 targetAngles = Vector3.Lerp(transform.eulerAngles, angles, camSmoothness * Time.deltaTime); // Define smoothness factor
             transform.eulerAngles = angles;
         }
-      
-        
 
 
         RaycastHit hit;
-        LayerMask layerMask = ~LayerMask.GetMask("BodyColliders");
+        LayerMask layerMask = ~LayerMask.GetMask("BodyColliders") + LayerMask.GetMask("Triggers");
         if (Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, camOffset, layerMask))
         {
             currentDistance = hit.distance;
@@ -42,12 +42,8 @@ public class CameraController : MonoBehaviour
         {
             currentDistance = Mathf.MoveTowards(currentDistance, camOffset, Time.deltaTime * returnToOffsetSpeed);
         }
-
-        //TODO: scroll stuff drove me nuts come back to this or leave it out completely :P
-        //distanceBack = Mathf.Clamp(distanceBack - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, 2, 10);
-
+            
         
-
         transform.position = GetTargetPosition() - currentDistance * transform.forward;
        
     }

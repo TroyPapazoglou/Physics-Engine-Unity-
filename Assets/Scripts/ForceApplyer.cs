@@ -5,7 +5,10 @@ using UnityEngine;
 public class ForceApplyer : MonoBehaviour
 {
     Camera cam;
-    public float force;    
+    public float force;
+    private bool HitSomething;
+    private Rigidbody rb;
+    private Vector3 bodyForce;
 
     private void Start()
     {
@@ -18,20 +21,38 @@ public class ForceApplyer : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            LayerMask layerMask = ~LayerMask.GetMask("Player");
+            LayerMask layerMask = ~LayerMask.GetMask("Player") + ~LayerMask.GetMask("Platform");
+
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
                 Ragdoll ragDoll = hit.collider.GetComponentInParent<Ragdoll>();
-                if (ragDoll)
-                    ragDoll.ragdollActive = true;
+                if (ragDoll != null)                
+                    ragDoll.ragdollActive = true;                  
+                    
 
-                Rigidbody body = hit.collider.GetComponent<Rigidbody>();
-                if (body)
-                    body.AddForce(-ray.direction * force);
+                Rigidbody bodyPart = hit.collider.GetComponent<Rigidbody>();
+                if (bodyPart != null)
+                {
+                    rb = bodyPart;
+                    bodyForce = ray.direction * force;
+                    hit.collider.GetComponent<Rigidbody>().velocity = (ray.direction * force);                    
+                }
+                    
             }            
         }
 
 
         
     }
+
+    //private void FixedUpdate()
+    //{
+    //    if (HitSomething)
+    //    {
+    //        HitSomething = false;
+    //        rb.AddForce(bodyForce);
+    //        rb = null;
+    //        bodyForce = Vector3.zero;
+    //    }
+    //}
 }

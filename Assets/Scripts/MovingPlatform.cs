@@ -6,9 +6,9 @@ public class MovingPlatform : MonoBehaviour
 {
 
     [SerializeField] private float leftPos;
-    [SerializeField] private float rightPos;
-    private float TimeToMove = 3f;
-    private bool StartLeft = true;
+    [SerializeField] private float rightPos;    
+    [SerializeField] private float TimeToMove = 3f;
+    [SerializeField] private bool StartLeft = true;
 
     Rigidbody rb;
     CharacterController cc;
@@ -32,7 +32,7 @@ public class MovingPlatform : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            cc.Move(rb.velocity * Time.fixedDeltaTime);           
+            cc.Move(rb.velocity * Time.deltaTime);           
         }
     }
 
@@ -47,11 +47,11 @@ public class MovingPlatform : MonoBehaviour
 
             if (StartLeft)
             {
-                targetPosition = new Vector3(leftPos, transform.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x + leftPos, transform.position.y, transform.position.z);
             }
             else
             {
-                targetPosition = new Vector3(rightPos, transform.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x + rightPos, transform.position.y, transform.position.z);
             }
 
             while (t < 1f)

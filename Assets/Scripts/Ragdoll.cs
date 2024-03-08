@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class Ragdoll : MonoBehaviour
 {
-    private Animator animator = null;
-    private List<Rigidbody> rigidbodies = new List<Rigidbody>();
+    private Animator animator = null;   
+    public List<Rigidbody> rigidbodies = new List<Rigidbody>();
     public bool ragdollActive = false;
    
     public bool RagDoll
@@ -18,24 +18,47 @@ public class Ragdoll : MonoBehaviour
             foreach (Rigidbody r in rigidbodies)
             {
                 r.isKinematic = !value;
+                r.WakeUp();
             }
+            
         }
     }
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        foreach(Rigidbody r in rigidbodies)
+        CollectRigidbodiesInChildren(transform);
+
+        foreach (Rigidbody r in rigidbodies)
         {
             r.isKinematic = true;
         }
     }
-        
+
+    void CollectRigidbodiesInChildren(Transform parent)
+    {
+        foreach (Transform child in parent)
+        {
+            Rigidbody rb = child.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rigidbodies.Add(rb);
+            }
+
+            //not including the grandchildren means the interaction with interactables is dodgy but
+            //applying forces on to the ragdoll itself looks somewhat realistic
+            //i could not figure out why this was occuring but i think i prefer more realistic ragdoll interactions
+            CollectRigidbodiesInChildren(child);
+        }
+
+    }
+
+
     void Update()
     {
         if (ragdollActive)
         {
-            RagDoll = true;
+            RagDoll = true;            
         }
         else
         {

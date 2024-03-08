@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Platform
+  - Canvas
   layers:
   - Default
   - TransparentFX
@@ -14,9 +15,9 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
-  - 
-  - 
+  - Interactables
+  - Platform
+  - Triggers
   - 
   - 
   - 
